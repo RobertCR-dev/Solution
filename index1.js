@@ -2,28 +2,24 @@
 let timeoutToDelete;
 
 function drawContainer(containerSize, childSize, numberOfChildren) {
-  //A little bit of validation
   try {
     containerSize = parseInt(containerSize);
     numberOfChildren = parseInt(numberOfChildren);
     childSize = parseInt(childSize);
     if (isNaN(containerSize) || isNaN(numberOfChildren) || isNaN(childSize)) {
-      throw new Error('Do submit only numbers');
+      throw new Error();
     }
-    if (containerSize === 0 || numberOfChildren === 0 || childSize === 0) {
-      throw new Error('Do submit only numbers');
-    }
-  } catch (E) {
-    alert(E);
+  } catch (_) {
+    alert('Do submit only numbers');
     return;
   }
-
-  //Checking how many childs will fit.
   const childsThatFitSide = Math.floor(containerSize / childSize);
   console.log(childsThatFitSide);
   const maxFit = childsThatFitSide * childsThatFitSide;
-
-  if (maxFit < numberOfChildren) {
+  if (containerSize === 0 || numberOfChildren === 0 || childSize === 0) {
+    alert('One submitted value is 0');
+    return;
+  } else if (maxFit < numberOfChildren) {
     alert(`${numberOfChildren} childs cant fit. Rendering only: ${maxFit}`);
     render(containerSize, maxFit, childSize);
     return;
@@ -34,16 +30,14 @@ function drawContainer(containerSize, childSize, numberOfChildren) {
 }
 
 function render(containerSize, numberOfChildren, childSize) {
-  const parent = document.querySelector('#mainSquare');
-
-  //Cleaning before executing, necessary in the future.
-  parent.innerHTML = '';
-
+  const body = document.querySelector('body');
+  const parent = document.createElement('div');
   parent.style.display = 'flex';
   parent.style.flexWrap = 'wrap';
   parent.style.width = `${containerSize}px`;
   parent.style.height = `${containerSize}px`;
   parent.style.padding = '0';
+  body.append(parent);
 
   for (i = 0; i < numberOfChildren; i++) {
     const child = document.createElement('div');
@@ -55,7 +49,6 @@ function render(containerSize, numberOfChildren, childSize) {
     child.style.transition = 'all 1s';
     child.setAttribute('data', i);
 
-    //Using a global timeout to later clear it when 2 seconds arent reached
     child.addEventListener('mouseover', (event) => {
       event.target.style.backgroundColor = getRandomColor();
       timeoutToDelete = setTimeout(() => {
@@ -72,12 +65,8 @@ function render(containerSize, numberOfChildren, childSize) {
 }
 
 function getRandomColor() {
-  //Math.random() * 256 will get 0 to 255
   return `rgb(${Math.floor(Math.random() * 256)},${Math.floor(
     Math.random() * 256
   )},${Math.floor(Math.random() * 256)})`;
 }
-
-drawContainer(200, 50, 17);
-
-//Code by Roberto Camacho
+drawContainer('300', 150, 4);
